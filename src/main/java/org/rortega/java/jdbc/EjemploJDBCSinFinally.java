@@ -14,12 +14,9 @@ public class EjemploJDBCSinFinally {
 
             Repositorio<Producto> repositorio = new ProductoRepositorio();
 
-            repositorio.listar().forEach(p -> System.out.println(
-                    "---------------".concat(String.valueOf(p.getId())).concat("---------------").concat("\n")
-                            .concat(p.getNombre()).concat("\n")
-                            .concat(String.valueOf(p.getPrecio())).concat("\n")
-                            .concat(String.valueOf(p.getFechaRegistro())).concat("\n")
-            ));
+            repositorio.listar().forEach(System.out::println);
+
+            System.out.println(repositorio.porId(2L));
 
         } catch (SQLException e) {
             System.err.println("No se pudo conectar a la Base de Datos.");

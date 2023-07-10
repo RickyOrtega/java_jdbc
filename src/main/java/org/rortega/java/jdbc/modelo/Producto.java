@@ -50,4 +50,12 @@ public class Producto {
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id).concat("|")
+                .concat(nombre).concat("|")
+                .concat(String.valueOf(precio)).concat("|")
+                .concat(String.valueOf(fechaRegistro).concat("|"));
+    }
 }
