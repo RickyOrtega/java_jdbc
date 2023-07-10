@@ -20,7 +20,7 @@ public class ProductoRepositorio implements Repositorio<Producto> {
         try (Statement stmt = getConnection().createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM productos")) {
 
-            while(rs.next()){
+            while (rs.next()) {
                 Producto p = crearProducto(rs);
                 productos.add(p);
             }
@@ -37,9 +37,12 @@ public class ProductoRepositorio implements Repositorio<Producto> {
         try (PreparedStatement ps = getConnection()
                 .prepareStatement("SELECT * FROM productos WHERE id = ?")) {
             ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                producto = crearProducto(rs);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    producto = crearProducto(rs);
+                }
             }
 
         } catch (SQLException e) {
@@ -50,12 +53,39 @@ public class ProductoRepositorio implements Repositorio<Producto> {
 
     @Override
     public void guardar(Producto producto) {
+        String sql;
+        if (producto.getId() != null && producto.getId() > 0) {
+            sql = "UPDATE productos SET nombre = ?, precio = ? WHERE id = ?";
+        } else {
+            sql = "INSERT INTO productos (nombre, precio, fecha_registro) values (?, ?, ?)";
+        }
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, producto.getNombre());
+            stmt.setLong(2, producto.getPrecio());
 
+            if (producto.getId() != null && producto.getId() > 0) {
+                stmt.setLong(3, producto.getId());
+            } else{
+                stmt.setDate(3, (Date) producto.getFechaRegistro());
+            }
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("No se pudo insertar el producto.");
+        }
     }
 
     @Override
     public void eliminar(Long id) {
 
+        String query = "DELETE FROM productos WHERE id = ?";
+
+        try(PreparedStatement stmt = getConnection().prepareStatement(query)) {
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Ocurrió un error al eliminar el producto.");
+        }
     }
 
     private Producto crearProducto(ResultSet rs) throws SQLException {
