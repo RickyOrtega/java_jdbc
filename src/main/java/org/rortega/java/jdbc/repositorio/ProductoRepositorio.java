@@ -44,7 +44,6 @@ public class ProductoRepositorio implements Repositorio<Producto> {
                     producto = crearProducto(rs);
                 }
             }
-
         } catch (SQLException e) {
             System.out.println("No se pudo hacer la solicitud a la Base de Datos");
         }
@@ -52,26 +51,34 @@ public class ProductoRepositorio implements Repositorio<Producto> {
     }
 
     @Override
-    public void guardar(Producto producto) {
-        String sql;
-        if (producto.getId() != null && producto.getId() > 0) {
-            sql = "UPDATE productos SET nombre = ?, precio = ? WHERE id = ?";
-        } else {
-            sql = "INSERT INTO productos (nombre, precio, fecha_registro) values (?, ?, ?)";
-        }
+    public void actualizar(Producto producto) {
+
+        System.out.println(producto);
+
+        String sql = "UPDATE productos SET nombre =  ?, precio = ? WHERE id = ?";
+
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             stmt.setString(1, producto.getNombre());
             stmt.setLong(2, producto.getPrecio());
-
-            if (producto.getId() != null && producto.getId() > 0) {
-                stmt.setLong(3, producto.getId());
-            } else{
-                stmt.setDate(3, (Date) producto.getFechaRegistro());
-            }
-
+            stmt.setLong(3, producto.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("No se pudo insertar el producto.");
+            System.out.println("No se pudo actualizar el producto.");
+        }
+    }
+
+    public void crear(Producto producto) {
+
+        System.out.println(producto);
+
+        String sql = "INSERT INTO productos (nombre, precio, fecha_registro) values (?, ?, ?)";
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setString(1, producto.getNombre());
+            stmt.setLong(2, producto.getPrecio());
+            stmt.setDate(3, new Date(producto.getFechaRegistro().getTime()));
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("No se pudo crear el producto.");
         }
     }
 
@@ -80,7 +87,7 @@ public class ProductoRepositorio implements Repositorio<Producto> {
 
         String query = "DELETE FROM productos WHERE id = ?";
 
-        try(PreparedStatement stmt = getConnection().prepareStatement(query)) {
+        try (PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
