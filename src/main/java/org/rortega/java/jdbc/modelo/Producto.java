@@ -4,13 +4,13 @@ import java.util.Date;
 
 public class Producto {
     private Long id;
-    private String nomnre;
+    private String nombre;
     private Integer precio;
     private Date fechaRegistro;
 
-    public Producto(Long id, String nomnre, Integer precio, Date fechaRegistro) {
+    public Producto(Long id, String nombre, Integer precio, Date fechaRegistro) {
         this.id = id;
-        this.nomnre = nomnre;
+        this.nombre = nombre;
         this.precio = precio;
         this.fechaRegistro = fechaRegistro;
     }
@@ -27,12 +27,12 @@ public class Producto {
         this.id = id;
     }
 
-    public String getNomnre() {
-        return nomnre;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNomnre(String nomnre) {
-        this.nomnre = nomnre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public Integer getPrecio() {
